@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Klasowy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Blog Klasowy</h1>
+        <p>Kliknij na tytuł, aby zobaczyć wpis</p>
+    </header>
+
+    <main>
+        <section id="post-list"></section>
+    </main>
+
+    <!-- OKNO MODALNE -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span id="close" class="close">&times;</span>
+            <h2 id="modal-title"></h2>
+            <img id="modal-img1" class="modal-img" src="" alt="">
+            <img id="modal-img2" class="modal-img" src="" alt="">
+            <p id="modal-desc"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
