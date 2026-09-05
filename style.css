@@ -6,7 +6,7 @@ body {
 }
 
 header {
-    background: #4a76fd;
+    background: #373737;
     color: white;
     padding: 30px;
     text-align: center;
@@ -29,7 +29,7 @@ main {
 }
 
 .post-title:hover {
-    background: #e8e8e8;
+    background: #777777;
 }
 
 /* MODAL */
@@ -45,7 +45,7 @@ main {
 }
 
 .modal-content {
-    background: white;
+    background: rgb(123, 115, 115);
     margin: 5% auto;
     padding: 20px;
     width: 90%;
