@@ -1,272 +1,287 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background: #f2f2f2;
-    color: #333;
+// TU DODAJESZ WPISY SAMODZIELNIE
+const posts = [
+    {
+        title: "Wpis 1",
+        img1: "img/zdjecie1a.jpg",
+        img2: "img/zdjecie1b.jpg",
+        desc: "Opis wpisu 1"
+    },
+    {
+        title: "Wpis 2",
+        img1: "img/zdjecie2a.jpg",
+        img2: "img/zdjecie2b.jpg",
+        desc: "Opis wpisu 2"
+    },
+    {
+        title: "Wpis 3",
+        img1: "img/zdjecie3a.jpg",
+        img2: "img/zdjecie3b.jpg",
+        desc: "Opis wpisu 3"
+    },
+    {
+        title: "Wpis 4",
+        img1: "img/zdjecie4a.jpg",
+        img2: "img/zdjecie4b.jpg",
+        desc: "Opis wpisu 4"
+    },
+    {
+        title: "Wpis 5",
+        img1: "img/zdjecie5a.jpg",
+        img2: "img/zdjecie5b.jpg",
+        desc: "Opis wpisu 5"
+    },
+    {
+        title: "Wpis 6",
+        img1: "img/zdjecie6a.jpg",
+        img2: "img/zdjecie6b.jpg",
+        desc: "Opis wpisu 6"
+    }
+];
+
+// LISTA TYTUŁÓW
+const list = document.getElementById("post-list");
+
+posts.forEach((post, index) => {
+    const div = document.createElement("div");
+    div.className = "post-title";
+    div.textContent = post.title;
+    div.onclick = () => openModal(index);
+    list.appendChild(div);
+});
+
+// MODAL
+const modal = document.getElementById("modal");
+const closeBtn = document.getElementById("close");
+
+function openModal(index) {
+    document.getElementById("modal-title").textContent = posts[index].title;
+    document.getElementById("modal-img1").src = posts[index].img1;
+    document.getElementById("modal-img2").src = posts[index].img2;
+    document.getElementById("modal-desc").textContent = posts[index].desc;
+
+    modal.style.display = "block";
 }
 
-header {
-    background: #373737;
-    color: white;
-    padding: 30px;
-    text-align: center;
+closeBtn.onclick = () => {
+    modal.style.display = "none";
+};
+
+window.onclick = (e) => {
+    if (e.target === modal) modal.style.display = "none";
+};
+
+// PANEL GIER
+const gamesToggle = document.getElementById("games-toggle");
+const gamesPanel = document.getElementById("games-panel");
+const gamesClose = document.getElementById("games-close");
+const gameStage = document.getElementById("game-stage");
+let snakeTimer;
+
+gamesToggle.onclick = () => {
+    gamesPanel.classList.add("open");
+    gamesPanel.setAttribute("aria-hidden", "false");
+};
+
+gamesClose.onclick = closeGames;
+gamesPanel.onclick = (event) => {
+    if (event.target === gamesPanel) closeGames();
+};
+
+function closeGames() {
+    gamesPanel.classList.remove("open");
+    gamesPanel.setAttribute("aria-hidden", "true");
+    clearInterval(snakeTimer);
 }
 
-main {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 0 20px;
+document.querySelectorAll(".game-choice").forEach((button) => {
+    button.onclick = () => startGame(button.dataset.game);
+});
+
+function startGame(gameName) {
+    clearInterval(snakeTimer);
+    gameStage.hidden = false;
+    if (gameName === "snake") createSnakeGame();
+    if (gameName === "snowflakes") createSnowflakeGame();
+    if (gameName === "memory") createMemoryGame();
 }
 
-.post-title {
-    background: white;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    transition: 0.2s;
-}
+function createSnowflakeGame() {
+    const target = 15;
+    let score = 0;
+    gameStage.innerHTML = `<h3>Śnieżynki</h3><p class="game-score">Wynik: 0 / ${target}</p><p>Kliknij trzy śnieżynki spadające z nieba!</p><div class="clicking-field"></div>`;
+    const scoreElement = gameStage.querySelector(".game-score");
+    const field = gameStage.querySelector(".clicking-field");
+    const snowflakes = [];
 
-.post-title:hover {
-    background: #777777;
-}
-
-/* MODAL */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 10;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-}
-
-.modal-content {
-    background: rgb(248, 247, 247);
-    margin: 5% auto;
-    padding: 20px;
-    width: 90%;
-    max-width: 600px;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.close {
-    float: right;
-    font-size: 28px;
-    cursor: pointer;
-}
-
-.modal-img {
-    width: 100%;
-    border-radius: 10px;
-    margin: 15px 0;
-}
-
-/* STREFA GIER */
-.games-toggle {
-    position: fixed;
-    z-index: 20;
-    left: 20px;
-    bottom: 20px;
-    border: 0;
-    border-radius: 999px;
-    padding: 14px 22px;
-    background: #e85d75;
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
-
-.games-toggle:hover {
-    background: #c7445d;
-}
-
-.games-panel {
-    display: none;
-    position: fixed;
-    z-index: 30;
-    inset: 0;
-    padding: 20px;
-    background: rgba(19, 29, 45, 0.72);
-    overflow-y: auto;
-}
-
-.games-panel.open {
-    display: block;
-}
-
-.games-panel-content {
-    position: relative;
-    width: 90%;
-    max-width: 720px;
-    margin: 3vh auto;
-    padding: 28px;
-    border-radius: 14px;
-    background: #fff;
-    text-align: center;
-}
-
-.games-panel-content h2 {
-    margin: 0 0 6px;
-    color: #26364d;
-}
-
-.games-intro {
-    margin-top: 0;
-    color: #667085;
-}
-
-.games-close {
-    position: absolute;
-    top: 10px;
-    right: 16px;
-    border: 0;
-    background: transparent;
-    color: #667085;
-    font-size: 30px;
-    cursor: pointer;
-}
-
-.game-choices {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-}
-
-.game-choice {
-    display: flex;
-    min-height: 125px;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    border: 2px solid #e4e7ec;
-    border-radius: 10px;
-    background: #f9fafb;
-    color: #26364d;
-    cursor: pointer;
-}
-
-.game-choice:hover {
-    border-color: #e85d75;
-    background: #fff4f5;
-}
-
-.game-icon {
-    font-size: 30px;
-}
-
-.game-choice small {
-    color: #667085;
-}
-
-.game-stage {
-    position: relative;
-    min-height: 300px;
-    margin-top: 22px;
-    border-radius: 10px;
-    background: #eef5fb;
-    overflow: hidden;
-}
-
-.game-stage h3 {
-    margin-bottom: 8px;
-    color: #26364d;
-}
-
-.game-score {
-    margin: 0 0 10px;
-    color: #475467;
-    font-weight: bold;
-}
-
-.game-message {
-    margin: 12px 0;
-    color: #16803c;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-#snake-canvas {
-    display: block;
-    width: min(100%, 360px);
-    height: auto;
-    margin: 0 auto 14px;
-    border: 3px solid #26364d;
-    background: #d9f2d0;
-}
-
-.game-restart {
-    border: 0;
-    border-radius: 6px;
-    padding: 10px 16px;
-    background: #26364d;
-    color: #fff;
-    cursor: pointer;
-}
-
-.clicking-field {
-    position: relative;
-    height: 230px;
-    margin: 0 10px 14px;
-    border-radius: 8px;
-    background: #dcecf9;
-}
-
-.click-target {
-    position: absolute;
-    border: 0;
-    background: transparent;
-    font-size: 34px;
-    line-height: 1;
-    cursor: pointer;
-    transform: translate(-50%, -50%);
-}
-
-.memory-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 74px);
-    justify-content: center;
-    gap: 10px;
-    margin: 22px auto;
-}
-
-.memory-card {
-    width: 74px;
-    height: 74px;
-    border: 2px solid #8ab6d6;
-    border-radius: 8px;
-    background: #fff;
-    color: #26364d;
-    font-size: 30px;
-    cursor: pointer;
-}
-
-.memory-card.revealed,
-.memory-card.found {
-    background: #d9f2d0;
-}
-
-.memory-card.found {
-    cursor: default;
-}
-
-@media (max-width: 600px) {
-    .games-panel-content {
-        padding: 24px 14px 18px;
+    function resetSnowflake(snowflake, top = -12) {
+        snowflake.top = top;
+        snowflake.left = 10 + Math.random() * 80;
+        snowflake.speed = 2 + Math.random() * 1.2;
+        snowflake.element.style.left = `${snowflake.left}%`;
+        snowflake.element.style.top = `${snowflake.top}%`;
     }
 
-    .game-choices {
-        grid-template-columns: 1fr;
+    for (let index = 0; index < 3; index += 1) {
+        const snowflake = {
+            element: document.createElement("button"),
+            top: index * 32,
+            left: 20 + index * 30,
+            speed: 2 + index * 0.5
+        };
+        snowflake.element.className = "click-target falling-snowflake";
+        snowflake.element.type = "button";
+        snowflake.element.textContent = "❄️";
+        snowflake.element.setAttribute("aria-label", "Kliknij spadającą śnieżynkę");
+        snowflake.element.style.left = `${snowflake.left}%`;
+        snowflake.element.style.top = `${snowflake.top}%`;
+        snowflake.element.onclick = () => {
+            score += 1;
+            scoreElement.textContent = `Wynik: ${score} / ${target}`;
+            if (score >= target) {
+                clearInterval(snakeTimer);
+                field.innerHTML = '<p class="game-message">Wygrałeś śnieżynki!</p><button class="game-restart" type="button">Zagraj ponownie</button>';
+                field.querySelector(".game-restart").onclick = createSnowflakeGame;
+            } else {
+                resetSnowflake(snowflake);
+            }
+        };
+        snowflakes.push(snowflake);
+        field.appendChild(snowflake.element);
     }
 
-    .game-choice {
-        min-height: 74px;
+    snakeTimer = setInterval(() => {
+        snowflakes.forEach((snowflake) => {
+            snowflake.top += snowflake.speed;
+            if (snowflake.top > 105) resetSnowflake(snowflake);
+            snowflake.element.style.top = `${snowflake.top}%`;
+        });
+    }, 40);
+}
+
+function createMemoryGame() {
+    const symbols = ["🍎", "🍎", "🎈", "🎈", "🚀", "🚀", "🐱", "🐱", "🎁", "🎁", "⚽", "⚽"].sort(() => Math.random() - 0.5);
+    let firstCard = null;
+    let locked = false;
+    let pairs = 0;
+    gameStage.innerHTML = '<h3>Pamięć</h3><p class="game-score">Pary: 0 / 6</p><p>Odkryj dwie takie same karty.</p><div class="memory-grid"></div>';
+    const scoreElement = gameStage.querySelector(".game-score");
+    const grid = gameStage.querySelector(".memory-grid");
+
+    symbols.forEach((symbol) => {
+        const card = document.createElement("button");
+        card.className = "memory-card";
+        card.type = "button";
+        card.textContent = "?";
+        card.dataset.symbol = symbol;
+        card.onclick = () => {
+            if (locked || card.classList.contains("found") || card === firstCard) return;
+            card.textContent = symbol;
+            card.classList.add("revealed");
+            if (!firstCard) {
+                firstCard = card;
+                return;
+            }
+            if (firstCard.dataset.symbol === card.dataset.symbol) {
+                firstCard.classList.add("found");
+                card.classList.add("found");
+                firstCard = null;
+                pairs += 1;
+                scoreElement.textContent = `Pary: ${pairs} / 6`;
+                if (pairs === 6) {
+                    grid.insertAdjacentHTML("afterend", '<p class="game-message">Wygrałeś pamięć!</p>');
+                }
+                return;
+            }
+            locked = true;
+            setTimeout(() => {
+                firstCard.textContent = "?";
+                card.textContent = "?";
+                firstCard.classList.remove("revealed");
+                card.classList.remove("revealed");
+                firstCard = null;
+                locked = false;
+            }, 650);
+        };
+        grid.appendChild(card);
+    });
+}
+
+function createSnakeGame() {
+    const canvasSize = 300;
+    const cellSize = 15;
+    let snake = [{ x: 10, y: 10 }];
+    let apple = { x: 5, y: 5 };
+    let direction = { x: 1, y: 0 };
+    let nextDirection = direction;
+    let apples = 0;
+    let finished = false;
+
+    gameStage.innerHTML = `<h3>Snake</h3><p class="game-score">Jabłka: 0 / 7</p><canvas id="snake-canvas" width="${canvasSize}" height="${canvasSize}"></canvas><p>Używaj klawiszy W, A, S i D.</p>`;
+    const canvas = document.getElementById("snake-canvas");
+    const context = canvas.getContext("2d");
+    const scoreElement = gameStage.querySelector(".game-score");
+
+    function randomApple() {
+        apple = {
+            x: Math.floor(Math.random() * (canvasSize / cellSize)),
+            y: Math.floor(Math.random() * (canvasSize / cellSize))
+        };
     }
+
+    function draw() {
+        context.fillStyle = "#d9f2d0";
+        context.fillRect(0, 0, canvasSize, canvasSize);
+        context.fillStyle = "#e85d75";
+        context.fillRect(apple.x * cellSize, apple.y * cellSize, cellSize - 1, cellSize - 1);
+        context.fillStyle = "#28734e";
+        snake.forEach((part) => context.fillRect(part.x * cellSize, part.y * cellSize, cellSize - 1, cellSize - 1));
+    }
+
+    function move() {
+        if (finished) return;
+        direction = nextDirection;
+        const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+        const hitWall = head.x < 0 || head.y < 0 || head.x >= canvasSize / cellSize || head.y >= canvasSize / cellSize;
+        const hitSnake = snake.some((part) => part.x === head.x && part.y === head.y);
+        if (hitWall || hitSnake) {
+            snake = [{ x: 10, y: 10 }];
+            direction = { x: 1, y: 0 };
+            nextDirection = direction;
+            apples = 0;
+            scoreElement.textContent = "Jabłka: 0 / 7";
+            randomApple();
+            draw();
+            return;
+        }
+        snake.unshift(head);
+        if (head.x === apple.x && head.y === apple.y) {
+            apples += 1;
+            scoreElement.textContent = `Jabłka: ${apples} / 7`;
+            if (apples === 7) {
+                finished = true;
+                gameStage.insertAdjacentHTML("beforeend", '<p class="game-message">Wygrałeś Snake!</p>');
+            }
+            randomApple();
+        } else {
+            snake.pop();
+        }
+        draw();
+    }
+
+    document.onkeydown = (event) => {
+        const directions = {
+            w: { x: 0, y: -1 },
+            s: { x: 0, y: 1 },
+            a: { x: -1, y: 0 },
+            d: { x: 1, y: 0 }
+        };
+        const newDirection = directions[event.key.toLowerCase()];
+        if (newDirection) {
+            nextDirection = newDirection;
+            event.preventDefault();
+        }
+    };
+
+    draw();
+    snakeTimer = setInterval(move, 130);
 }
