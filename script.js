@@ -324,9 +324,21 @@ function createSnakeGame() {
         context.fillRect(0, 0, canvasSize, canvasSize);
         context.fillStyle = "#e85d75";
         context.fillRect(apple.x * cellSize, apple.y * cellSize, cellSize - 1, cellSize - 1);
-        context.fillStyle = "#f5b642";
         goldenApples.forEach((goldenApple) => {
-            context.fillRect(goldenApple.x * cellSize, goldenApple.y * cellSize, cellSize - 1, cellSize - 1);
+            const centerX = goldenApple.x * cellSize + cellSize / 2;
+            const centerY = goldenApple.y * cellSize + cellSize / 2 + 1;
+            context.beginPath();
+            context.arc(centerX, centerY, 6, 0, Math.PI * 2);
+            context.fillStyle = "#ffd447";
+            context.fill();
+            context.strokeStyle = "#c88900";
+            context.lineWidth = 2;
+            context.stroke();
+            context.beginPath();
+            context.moveTo(centerX, centerY - 5);
+            context.lineTo(centerX + 2, centerY - 9);
+            context.strokeStyle = "#714b2a";
+            context.stroke();
         });
         context.fillStyle = "#28734e";
         snake.forEach((part) => context.fillRect(part.x * cellSize, part.y * cellSize, cellSize - 1, cellSize - 1));
@@ -337,6 +349,14 @@ function createSnakeGame() {
             x: Math.floor(Math.random() * (canvasSize / cellSize)),
             y: Math.floor(Math.random() * (canvasSize / cellSize))
         };
+        while (
+            (goldenApple.x === apple.x && goldenApple.y === apple.y) ||
+            snake.some((part) => part.x === goldenApple.x && part.y === goldenApple.y) ||
+            goldenApples.some((item) => item.x === goldenApple.x && item.y === goldenApple.y)
+        ) {
+            goldenApple.x = Math.floor(Math.random() * (canvasSize / cellSize));
+            goldenApple.y = Math.floor(Math.random() * (canvasSize / cellSize));
+        }
         goldenApples.push(goldenApple);
         const expireTimer = setTimeout(() => {
             goldenApples = goldenApples.filter((item) => item !== goldenApple);
