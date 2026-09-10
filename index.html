@@ -3,17 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Klasowy</title>
+    <title>Z życia klasy</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
-        <h1>Blog Klasowy</h1>
+        <h1>Z życia klasy</h1>
         <p>Wspomnienia naszych wydarzeń</p>
     </header>
 
     <main>
+        <nav class="class-tabs" aria-label="Wybór klasy">
+            <button class="class-tab" data-class="4" type="button">Klasa 4</button>
+            <button class="class-tab active" data-class="5" type="button">Klasa 5</button>
+            <button class="class-tab" data-class="6" type="button">Klasa 6</button>
+            <button class="class-tab" data-class="7" type="button">Klasa 7</button>
+            <button class="class-tab" data-class="8" type="button">Klasa 8</button>
+        </nav>
         <section id="post-list"></section>
     </main>
 
