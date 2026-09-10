@@ -157,6 +157,15 @@ const gamesPanel = document.getElementById("games-panel");
 const gamesClose = document.getElementById("games-close");
 const gameStage = document.getElementById("game-stage");
 let snakeTimer;
+let goldenAppleSpawnTimer;
+let goldenAppleExpireTimers = [];
+
+function clearSnakeTimers() {
+    clearInterval(snakeTimer);
+    clearInterval(goldenAppleSpawnTimer);
+    goldenAppleExpireTimers.forEach((timer) => clearTimeout(timer));
+    goldenAppleExpireTimers = [];
+}
 
 gamesToggle.onclick = () => {
     gamesPanel.classList.add("open");
@@ -171,7 +180,7 @@ gamesPanel.onclick = (event) => {
 function closeGames() {
     gamesPanel.classList.remove("open");
     gamesPanel.setAttribute("aria-hidden", "true");
-    clearInterval(snakeTimer);
+    clearSnakeTimers();
 }
 
 document.querySelectorAll(".game-choice").forEach((button) => {
@@ -179,7 +188,7 @@ document.querySelectorAll(".game-choice").forEach((button) => {
 });
 
 function startGame(gameName) {
-    clearInterval(snakeTimer);
+    clearSnakeTimers();
     gameStage.hidden = false;
     if (gameName === "snake") createSnakeGame();
     if (gameName === "snowflakes") createSnowflakeGame();
@@ -296,8 +305,9 @@ function createSnakeGame() {
     let nextDirection = direction;
     let apples = 0;
     let finished = false;
+    let goldenApples = [];
 
-    gameStage.innerHTML = `<h3>Snake</h3><p class="game-score">Jabłka: 0 / 7</p><canvas id="snake-canvas" width="${canvasSize}" height="${canvasSize}"></canvas><p>Używaj klawiszy W, A, S i D.</p>`;
+    gameStage.innerHTML = `<h3>Snake</h3><p class="game-score">Jabłka: 0 / 10</p><canvas id="snake-canvas" width="${canvasSize}" height="${canvasSize}"></canvas><p>Używaj klawiszy W, A, S i D. Złote jabłko daje 3 punkty i znika po 7 sekundach.</p>`;
     const canvas = document.getElementById("snake-canvas");
     const context = canvas.getContext("2d");
     const scoreElement = gameStage.querySelector(".game-score");
@@ -314,8 +324,26 @@ function createSnakeGame() {
         context.fillRect(0, 0, canvasSize, canvasSize);
         context.fillStyle = "#e85d75";
         context.fillRect(apple.x * cellSize, apple.y * cellSize, cellSize - 1, cellSize - 1);
+        context.fillStyle = "#f5b642";
+        goldenApples.forEach((goldenApple) => {
+            context.fillRect(goldenApple.x * cellSize, goldenApple.y * cellSize, cellSize - 1, cellSize - 1);
+        });
         context.fillStyle = "#28734e";
         snake.forEach((part) => context.fillRect(part.x * cellSize, part.y * cellSize, cellSize - 1, cellSize - 1));
+    }
+
+    function spawnGoldenApple() {
+        const goldenApple = {
+            x: Math.floor(Math.random() * (canvasSize / cellSize)),
+            y: Math.floor(Math.random() * (canvasSize / cellSize))
+        };
+        goldenApples.push(goldenApple);
+        const expireTimer = setTimeout(() => {
+            goldenApples = goldenApples.filter((item) => item !== goldenApple);
+            draw();
+        }, 7000);
+        goldenAppleExpireTimers.push(expireTimer);
+        draw();
     }
 
     function move() {
@@ -323,24 +351,34 @@ function createSnakeGame() {
         direction = nextDirection;
         const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
         const hitWall = head.x < 0 || head.y < 0 || head.x >= canvasSize / cellSize || head.y >= canvasSize / cellSize;
-        const hitSnake = snake.some((part) => part.x === head.x && part.y === head.y);
+        const hitSnake = apples >= 4 && snake.some((part) => part.x === head.x && part.y === head.y);
         if (hitWall || hitSnake) {
-            snake = [{ x: 10, y: 10 }];
-            direction = { x: 1, y: 0 };
-            nextDirection = direction;
-            apples = 0;
-            scoreElement.textContent = "Jabłka: 0 / 7";
-            randomApple();
-            draw();
+            finished = true;
+            clearSnakeTimers();
+            const reason = hitWall ? "Uderzyłeś w ścianę." : "Uderzyłeś w siebie.";
+            gameStage.insertAdjacentHTML("beforeend", `<div class="game-over"><p class="game-message">Przegrałeś!</p><p class="game-reason">${reason}</p><div class="game-actions"><button class="game-restart" type="button">Zagraj ponownie</button><button class="game-exit" type="button">Wyjście z gry</button></div></div>`);
+            gameStage.querySelector(".game-restart").onclick = createSnakeGame;
+            gameStage.querySelector(".game-exit").onclick = closeGames;
             return;
         }
         snake.unshift(head);
-        if (head.x === apple.x && head.y === apple.y) {
-            apples += 1;
-            scoreElement.textContent = `Jabłka: ${apples} / 7`;
-            if (apples === 7) {
+        const goldenAppleIndex = goldenApples.findIndex((goldenApple) => goldenApple.x === head.x && goldenApple.y === head.y);
+        if (goldenAppleIndex !== -1) {
+            goldenApples.splice(goldenAppleIndex, 1);
+            apples += 3;
+            scoreElement.textContent = `Jabłka: ${apples} / 10`;
+            if (apples >= 10) {
                 finished = true;
-                gameStage.insertAdjacentHTML("beforeend", '<p class="game-message">Wygrałeś Snake!</p>');
+                clearSnakeTimers();
+                gameStage.insertAdjacentHTML("beforeend", '<div class="game-over game-win"><p class="game-message">Wygrałeś Snake!</p></div>');
+            }
+        } else if (head.x === apple.x && head.y === apple.y) {
+            apples += 1;
+            scoreElement.textContent = `Jabłka: ${apples} / 10`;
+            if (apples >= 10) {
+                finished = true;
+                clearSnakeTimers();
+                gameStage.insertAdjacentHTML("beforeend", '<div class="game-over game-win"><p class="game-message">Wygrałeś Snake!</p></div>');
             }
             randomApple();
         } else {
@@ -365,4 +403,5 @@ function createSnakeGame() {
 
     draw();
     snakeTimer = setInterval(move, 130);
+    goldenAppleSpawnTimer = setInterval(spawnGoldenApple, 10000);
 }
