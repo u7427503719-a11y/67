@@ -10,7 +10,7 @@
 
     <header>
         <h1>Blog Klasowy</h1>
-        <p>Kliknij na tytuł, aby zobaczyć wpis</p>
+        <p>Wspomnienia naszych wydarzeń</p>
     </header>
 
     <main>
@@ -25,6 +25,34 @@
             <img id="modal-img1" class="modal-img" src="" alt="">
             <img id="modal-img2" class="modal-img" src="" alt="">
             <p id="modal-desc"></p>
+        </div>
+    </div>
+
+    <button id="games-toggle" class="games-toggle" type="button">Gry</button>
+
+    <div id="games-panel" class="games-panel" aria-hidden="true">
+        <div class="games-panel-content">
+            <button id="games-close" class="games-close" type="button" aria-label="Zamknij gry">&times;</button>
+            <h2>Strefa gier</h2>
+            <p class="games-intro">Wybierz grę i zdobądź zwycięstwo.</p>
+            <div class="game-choices">
+                <button class="game-choice" data-game="snake" type="button">
+                    <span class="game-icon">&#128013;</span>
+                    <strong>Snake</strong>
+                    <small>Zdobądź 7 jabłek</small>
+                </button>
+                <button class="game-choice" data-game="snowflakes" type="button">
+                    <span class="game-icon">&#10052;</span>
+                    <strong>Śnieżynki</strong>
+                    <small>Kliknij 15 śnieżynek</small>
+                </button>
+                <button class="game-choice" data-game="memory" type="button">
+                    <span class="game-icon">&#128218;</span>
+                    <strong>Pamięć</strong>
+                    <small>Znajdź 6 par</small>
+                </button>
+            </div>
+            <div id="game-stage" class="game-stage" hidden></div>
         </div>
     </div>
 
