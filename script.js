@@ -40,14 +40,55 @@ const posts = [
 
 // LISTA TYTUŁÓW
 const list = document.getElementById("post-list");
+const classTabs = document.querySelectorAll(".class-tab");
+let selectedClass = "5";
 
-posts.forEach((post, index) => {
-    const div = document.createElement("div");
-    div.className = "post-title";
-    div.textContent = post.title;
-    div.onclick = () => openModal(index);
-    list.appendChild(div);
+function renderPosts() {
+    list.innerHTML = "";
+    if (selectedClass === "4") {
+        const gallery = document.createElement("div");
+        gallery.className = "class-four-gallery";
+        posts.forEach((post) => {
+            [post.img1, post.img2].forEach((imagePath) => {
+                const image = document.createElement("img");
+                image.src = imagePath;
+                image.alt = "Zdjęcie klasy 4";
+                gallery.appendChild(image);
+            });
+        });
+        list.appendChild(gallery);
+        return;
+    }
+
+    const classPosts = ["5", "6", "7", "8"].includes(selectedClass) ? posts : [];
+
+    if (classPosts.length === 0) {
+        const emptyPlace = document.createElement("div");
+        emptyPlace.className = "empty-class-place";
+        emptyPlace.textContent = `Miejsce na wpisy klasy ${selectedClass}`;
+        list.appendChild(emptyPlace);
+        return;
+    }
+
+    classPosts.forEach((post, index) => {
+        const div = document.createElement("div");
+        div.className = "post-title";
+        div.textContent = post.title;
+        div.onclick = () => openModal(index);
+        list.appendChild(div);
+    });
+}
+
+classTabs.forEach((tab) => {
+    tab.onclick = () => {
+        selectedClass = tab.dataset.class;
+        classTabs.forEach((item) => item.classList.remove("active"));
+        tab.classList.add("active");
+        renderPosts();
+    };
 });
+
+renderPosts();
 
 // MODAL
 const modal = document.getElementById("modal");
