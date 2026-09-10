@@ -1,6 +1,7 @@
 // TU DODAJESZ WPISY SAMODZIELNIE
 const posts = [
     {
+     //zmiana zdjęć i opisu klasa 5   
         title: "Wpis 1",
         img1: "img/zdjecie1a.jpg",
         img2: "img/zdjecie1b.jpg",
@@ -37,6 +38,46 @@ const posts = [
         desc: "Opis wpisu 6"
     }
 ];
+//zmiana djęcia klasa 4
+const classFourPhotos = [
+    "img/zdjecie1a.jpg", "img/zdjecie1b.jpg",
+    "img/zdjecie2a.jpg", "img/zdjecie2b.jpg",
+    "img/zdjecie3a.jpg", "img/zdjecie3b.jpg",
+    "img/zdjecie4a.jpg", "img/zdjecie4b.jpg",
+    "img/zdjecie5a.jpg", "img/zdjecie5b.jpg",
+    "img/zdjecie6a.jpg", "img/zdjecie6b.jpg"
+];
+
+const postsByClass = {
+    "5": posts,
+    "6": [
+        //zmiana opisu i zdjęć klasa 6
+        { title: "Wpis 1 klasy 6", img1: "img/zdjecie1a.jpg", img2: "img/zdjecie1b.jpg", desc: "Opis wpisu 1 klasy 6" },
+        { title: "Wpis 2 klasy 6", img1: "img/zdjecie2a.jpg", img2: "img/zdjecie2b.jpg", desc: "Opis wpisu 2 klasy 6" },
+        { title: "Wpis 3 klasy 6", img1: "img/zdjecie3a.jpg", img2: "img/zdjecie3b.jpg", desc: "Opis wpisu 3 klasy 6" },
+        { title: "Wpis 4 klasy 6", img1: "img/zdjecie4a.jpg", img2: "img/zdjecie4b.jpg", desc: "Opis wpisu 4 klasy 6" },
+        { title: "Wpis 5 klasy 6", img1: "img/zdjecie5a.jpg", img2: "img/zdjecie5b.jpg", desc: "Opis wpisu 5 klasy 6" },
+        { title: "Wpis 6 klasy 6", img1: "img/zdjecie6a.jpg", img2: "img/zdjecie6b.jpg", desc: "Opis wpisu 6 klasy 6" }
+    ],
+    "7": [
+        //zmiana opisu i zdjęć klasa 7
+        { title: "Wpis 1 klasy 7", img1: "img/zdjecie1a.jpg", img2: "img/zdjecie1b.jpg", desc: "Opis wpisu 1 klasy 7" },
+        { title: "Wpis 2 klasy 7", img1: "img/zdjecie2a.jpg", img2: "img/zdjecie2b.jpg", desc: "Opis wpisu 2 klasy 7" },
+        { title: "Wpis 3 klasy 7", img1: "img/zdjecie3a.jpg", img2: "img/zdjecie3b.jpg", desc: "Opis wpisu 3 klasy 7" },
+        { title: "Wpis 4 klasy 7", img1: "img/zdjecie4a.jpg", img2: "img/zdjecie4b.jpg", desc: "Opis wpisu 4 klasy 7" },
+        { title: "Wpis 5 klasy 7", img1: "img/zdjecie5a.jpg", img2: "img/zdjecie5b.jpg", desc: "Opis wpisu 5 klasy 7" },
+        { title: "Wpis 6 klasy 7", img1: "img/zdjecie6a.jpg", img2: "img/zdjecie6b.jpg", desc: "Opis wpisu 6 klasy 7" }
+    ],
+    "8": [
+        //zmina zdjęcia i opisu klasa 8
+        { title: "Wpis 1 klasy 8", img1: "img/zdjecie1a.jpg", img2: "img/zdjecie1b.jpg", desc: "Opis wpisu 1 klasy 8" },
+        { title: "Wpis 2 klasy 8", img1: "img/zdjecie2a.jpg", img2: "img/zdjecie2b.jpg", desc: "Opis wpisu 2 klasy 8" },
+        { title: "Wpis 3 klasy 8", img1: "img/zdjecie3a.jpg", img2: "img/zdjecie3b.jpg", desc: "Opis wpisu 3 klasy 8" },
+        { title: "Wpis 4 klasy 8", img1: "img/zdjecie4a.jpg", img2: "img/zdjecie4b.jpg", desc: "Opis wpisu 4 klasy 8" },
+        { title: "Wpis 5 klasy 8", img1: "img/zdjecie5a.jpg", img2: "img/zdjecie5b.jpg", desc: "Opis wpisu 5 klasy 8" },
+        { title: "Wpis 6 klasy 8", img1: "img/zdjecie6a.jpg", img2: "img/zdjecie6b.jpg", desc: "Opis wpisu 6 klasy 8" }
+    ]
+};
 
 // LISTA TYTUŁÓW
 const list = document.getElementById("post-list");
@@ -48,19 +89,17 @@ function renderPosts() {
     if (selectedClass === "4") {
         const gallery = document.createElement("div");
         gallery.className = "class-four-gallery";
-        posts.forEach((post) => {
-            [post.img1, post.img2].forEach((imagePath) => {
-                const image = document.createElement("img");
-                image.src = imagePath;
-                image.alt = "Zdjęcie klasy 4";
-                gallery.appendChild(image);
-            });
+        classFourPhotos.forEach((imagePath) => {
+            const image = document.createElement("img");
+            image.src = imagePath;
+            image.alt = "Zdjęcie klasy 4";
+            gallery.appendChild(image);
         });
         list.appendChild(gallery);
         return;
     }
 
-    const classPosts = ["5", "6", "7", "8"].includes(selectedClass) ? posts : [];
+    const classPosts = postsByClass[selectedClass] || [];
 
     if (classPosts.length === 0) {
         const emptyPlace = document.createElement("div");
@@ -95,10 +134,11 @@ const modal = document.getElementById("modal");
 const closeBtn = document.getElementById("close");
 
 function openModal(index) {
-    document.getElementById("modal-title").textContent = posts[index].title;
-    document.getElementById("modal-img1").src = posts[index].img1;
-    document.getElementById("modal-img2").src = posts[index].img2;
-    document.getElementById("modal-desc").textContent = posts[index].desc;
+    const post = postsByClass[selectedClass][index];
+    document.getElementById("modal-title").textContent = post.title;
+    document.getElementById("modal-img1").src = post.img1;
+    document.getElementById("modal-img2").src = post.img2;
+    document.getElementById("modal-desc").textContent = post.desc;
 
     modal.style.display = "block";
 }
