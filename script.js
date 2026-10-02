@@ -2,7 +2,7 @@
 const posts = [
     {
      //zmiana zdjęć i opisu klasa 5   
-        title: "Wpis 1",
+        title: "Dzień chłopaka",
         img1: "img/zdjecie1a.jpg",
         img2: "img/zdjecie1b.jpg",
         desc: "Opis wpisu 1"
@@ -38,15 +38,9 @@ const posts = [
         desc: "Opis wpisu 6"
     }
 ];
-//zmiana djęcia klasa 4
-const classFourPhotos = [
-    "img/zdjecie1a.jpg", "img/zdjecie1b.jpg",
-    "img/zdjecie2a.jpg", "img/zdjecie2b.jpg",
-    "img/zdjecie3a.jpg", "img/zdjecie3b.jpg",
-    "img/zdjecie4a.jpg", "img/zdjecie4b.jpg",
-    "img/zdjecie5a.jpg", "img/zdjecie5b.jpg",
-    "img/zdjecie6a.jpg", "img/zdjecie6b.jpg"
-];
+
+
+
 
 const postsByClass = {
     "5": posts,
@@ -76,29 +70,34 @@ const postsByClass = {
         { title: "Wpis 4 klasy 8", img1: "img/zdjecie4a.jpg", img2: "img/zdjecie4b.jpg", desc: "Opis wpisu 4 klasy 8" },
         { title: "Wpis 5 klasy 8", img1: "img/zdjecie5a.jpg", img2: "img/zdjecie5b.jpg", desc: "Opis wpisu 5 klasy 8" },
         { title: "Wpis 6 klasy 8", img1: "img/zdjecie6a.jpg", img2: "img/zdjecie6b.jpg", desc: "Opis wpisu 6 klasy 8" }
+    ],
+    "4": [   
+        { title: "Wpis 1 klasy 4", img1: "img/zdjecie1a.jpg", img2: "img/zdjecie1b.jpg", desc: "Opis wpisu 1 klasy 4" },
+        { title: "Wpis 2 klasy 4", img1: "img/zdjecie2a.jpg", img2: "img/zdjecie2b.jpg", desc: "Opis wpisu 2 klasy 4" },
+        { title: "Wpis 3 klasy 4", img1: "img/zdjecie3a.jpg", img2: "img/zdjecie3b.jpg", desc: "Opis wpisu 3 klasy 4" },
+        { title: "Wpis 4 klasy 4", img1: "img/zdjecie4a.jpg", img2: "img/zdjecie4b.jpg", desc: "Opis wpisu 4 klasy 4" },
+        { title: "Wpis 5 klasy 4", img1: "img/zdjecie5a.jpg", img2: "img/zdjecie5b.jpg", desc: "Opis wpisu 5 klasy 4" },
+        { title: "Wpis 6 klasy 4", img1: "img/zdjecie6a.jpg", img2: "img/zdjecie6b.jpg", desc: "Opis wpisu 6 klasy 4" }
     ]
+};
+
+const groupPhotos = {
+    "4": "img/klasa4.jpg",
+    "5": "img/klasa5.jpg",
+    "6": "img/klasa6.jpg",
+    "7": "img/klasa7.jpg",
+    "8": "img/klasa8.jpg"
 };
 
 // LISTA TYTUŁÓW
 const list = document.getElementById("post-list");
 const classTabs = document.querySelectorAll(".class-tab");
+const classPhoto = document.getElementById("class-photo");
 let selectedClass = "5";
+classPhoto.style.backgroundImage = `url("${groupPhotos[selectedClass]}")`;
 
 function renderPosts() {
     list.innerHTML = "";
-    if (selectedClass === "4") {
-        const gallery = document.createElement("div");
-        gallery.className = "class-four-gallery";
-        classFourPhotos.forEach((imagePath) => {
-            const image = document.createElement("img");
-            image.src = imagePath;
-            image.alt = "Zdjęcie klasy 4";
-            gallery.appendChild(image);
-        });
-        list.appendChild(gallery);
-        return;
-    }
-
     const classPosts = postsByClass[selectedClass] || [];
 
     if (classPosts.length === 0) {
@@ -121,6 +120,8 @@ function renderPosts() {
 classTabs.forEach((tab) => {
     tab.onclick = () => {
         selectedClass = tab.dataset.class;
+        classPhoto.style.backgroundImage = `url("${groupPhotos[selectedClass]}")`;
+        classPhoto.setAttribute("aria-label", `Zdjęcie grupowe klasy ${selectedClass}`);
         classTabs.forEach((item) => item.classList.remove("active"));
         tab.classList.add("active");
         renderPosts();
@@ -135,10 +136,12 @@ const closeBtn = document.getElementById("close");
 
 function openModal(index) {
     const post = postsByClass[selectedClass][index];
+    const description = document.getElementById("modal-desc");
     document.getElementById("modal-title").textContent = post.title;
     document.getElementById("modal-img1").src = post.img1;
     document.getElementById("modal-img2").src = post.img2;
-    document.getElementById("modal-desc").textContent = post.desc;
+    description.textContent = selectedClass === "4" ? "" : post.desc;
+    description.hidden = selectedClass === "4";
 
     modal.style.display = "block";
 }
