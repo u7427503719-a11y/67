@@ -6,10 +6,23 @@ body {
 }
 
 header {
-    background: #373737;
+    background: #383535;
     color: white;
     padding: 30px;
     text-align: center;
+}
+
+.header-photo-placeholder {
+    width: min(100%, 1100px);
+    height: min(52vw, 460px);
+    min-height: 220px;
+    margin: 24px auto;
+    border: 3px dashed #8a8a8a;
+    border-radius: 10px;
+    box-sizing: border-box;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 main {
@@ -50,22 +63,6 @@ main {
     background: #fff;
     color: #667085;
     text-align: center;
-}
-
-.class-four-gallery {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-}
-
-.class-four-gallery img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    border-radius: 8px;
-    object-fit: cover;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .post-title {
@@ -362,10 +359,6 @@ main {
     }
 
     .game-choices {
-        grid-template-columns: 1fr;
-    }
-
-    .class-four-gallery {
         grid-template-columns: 1fr;
     }
 
